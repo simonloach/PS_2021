@@ -1,0 +1,16 @@
+version: '1.0'
+services:
+  server_cont:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    entrypoint: python server.py
+  client_cont:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    entrypoint: python client.py
