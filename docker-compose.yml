@@ -21,3 +21,5 @@ services:
     stdin_open: true
     tty: true
     entrypoint: python client.py
+    port:
+    - 2137:2137
