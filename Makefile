@@ -1,13 +1,13 @@
-.PHONY: up
+.PHONY: up down server client
 up:
 	@docker compose build
-	@docker compose up -d
-.PHONY: down
+	@docker compose up
+
 down:
 	@docker compose down
-.PHONY: attach_serv
-attach_serv:
+
+server:
 	@docker attach ps_2021_server_cont_1
-.PHONY: attach_cli
-attach_cli:
+
+client:
 	@docker attach ps_2021_client_cont_1

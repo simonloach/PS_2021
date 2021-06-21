@@ -7,7 +7,14 @@ services:
     stdin_open: true
     tty: true
     entrypoint: python server.py
-  client_cont:
+  client2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    entrypoint: python client.py
+  client1:
     build:
       context: .
       dockerfile: Dockerfile
