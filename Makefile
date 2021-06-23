@@ -1,7 +1,7 @@
 .PHONY: up down server client
 up:
 	@docker compose build
-	@docker compose up
+	@docker compose up -d
 
 down:
 	@docker compose down
