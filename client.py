@@ -1,7 +1,11 @@
+from player import MessageType
+from board import Board
+
 import socket
 import argparse
 import re
 import logging
+import os
 
 format = "%(asctime)s: %(message)s"
 logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
@@ -20,6 +24,7 @@ PORT_REGEX = re.compile('^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{
 class Client:
 
     def __init__(self, **kwargs):
+        self.last_move = (None, None)
         if kwargs['p'] is not None:
             if PORT_REGEX.match(kwargs['p']):
                 self.port = kwargs['p']
@@ -48,26 +53,74 @@ class Client:
         else:
             raise Exception('No address for the server was provided.')
 
+        self.board=Board()
+
 
     def connect(self):
         logging.info(f"Connecting to {self.server_address} on port {self.port}")
         self.socket.connect((self.server_address, int(self.port)))
-        logging.info(f"Bruh")
+        logging.info(f"Connected!")
     
+
     def listen(self):
-        print(self.socket.recv(4096))
+        logging.info(f"Listening")
+        message = self.socket.recv(10)
+        return message
+
+    def send_move(self, x: str, y: str):
+        '''
+            x, y are strings represendation of int from range(0,2)
+        '''
+        self.socket.send(MessageType.NEXT_MOVE.value.to_bytes(1, "big") + x.encode() + y.encode() )
+        return self
+    
+    def set_last(self, x, y):
+        self.last_move = (x,y)
+#TODO TUTAJ TE GOWNA WSZYSTKO WIESZAJA, OGOLNIE WSZYSTKO WIESZA JAK SIE PROBUJE FUNKCJE WYWALIC PRZEZ PDB
+    def get_last(self):
+        return self.last_move
 
 if __name__ == '__main__':
     try:
         c = Client(**vars(args))
         c.connect()
-        c.listen()
+        while True:
+
+            message = c.listen()
+            message_id = message[0]
+            message_payload = message[1:]
+
+            logging.info(f"Recieved: {message} where ID:{message_id} | payload: {message_payload}")
+
+            print(c.board)
+
+            if message_id == MessageType.NEW_GAME.value:
+                # os.system('cls' if os.name == 'nt' else 'clear')
+                pass
+            elif message_id == MessageType.YOUR_TURN.value:
+                print('Choose your next move:')
+                x=input("Provide X coordinate:\t")
+                y=input("Provide Y coordinate:\t")
+                c.set_last(x, y)
+                c.send_move(x, y)
+            elif message_id == MessageType.NEXT_MOVE.value:
+                print('next move')
+            elif message_id == MessageType.MOVE_VALIDITY.value:
+                if bool(message_payload):
+                    #TODO TUTAJ DODAC WYNIK POPRAWNEGO RUCHU NA LOCALU I ZROBIC UPDATE BOARDA
+                    print(c.get_last())
+                    #c.board.update_board()
+                else:
+                    logging.warning("Bad move!")
+            elif message_id == MessageType.BOARD_UPDATE.value:
+                c.board.update_board(message_payload)
+
     except TimeoutError as e:
         logging.error("Connection timed out!")
     except Exception as e:
         logging.error("Parsing parameters encountered error: \n\t", e)
     finally:
-        print("Try again!")
+        logging.info("Program finished")
         
 
 

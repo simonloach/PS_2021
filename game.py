@@ -24,6 +24,7 @@ class Game:
         self.board[idx] = self.current_player + 1
 
         next_player = (self.current_player + 1) % 2
+        print(self.board)
         self.players[next_player].send_msg(MessageType.BOARD_UPDATE, bytes(self.board))
         self.players[self.current_player].update_state(PlayerState.WAITING)
         self.players[next_player].update_state(PlayerState.IN_TURN)
