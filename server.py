@@ -38,18 +38,19 @@ class Server:
                         _ = self.players.pop(self.players.index(this_player))
                         other_player = self.players.pop(0)
                         self.games.append(Game(this_player, other_player))
-                        this_player.send_msg(MessageType.NEW_GAME)
-                        other_player.send_msg(MessageType.NEW_GAME)
+                        this_player.send_msg(MessageType.NEW_GAME, b'\x01')
+                        other_player.send_msg(MessageType.NEW_GAME, b'\x02')
                     else:
-                        time.sleep(0.5)
+                        time.sleep(2)
                 else:
                     if this_player.game.is_now_my_turn(this_player):
+                        time.sleep(2)
                         this_player.send_msg(MessageType.YOUR_TURN)
                         move = this_player.wait_for_move()
                         validity = this_player.game.move(move)
                         this_player.send_msg(MessageType.MOVE_VALIDITY, validity.to_bytes(1, 'big'))
                     else:
-                        time.sleep(0.5)
+                        time.sleep(2)
 
         except Exception as e:
             logging.exception("Exception during client handling")

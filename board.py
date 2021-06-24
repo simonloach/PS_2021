@@ -31,5 +31,10 @@ class Board:
     
     def update_board(self, new_board: bytes):
         self.board = list(new_board)
+
+    def update_board_with_local(self, last_move, cursor):
+        index = int(last_move[0]) - 1 + (int(last_move[1]) - 1) * 3
+        self.board[index] = cursor
+
 b = Board()
 print(b)

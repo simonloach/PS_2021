@@ -54,6 +54,7 @@ class Client:
             raise Exception('No address for the server was provided.')
 
         self.board=Board()
+        self.cursor=None
 
 
     def connect(self):
@@ -93,9 +94,11 @@ if __name__ == '__main__':
             logging.info(f"Recieved: {message} where ID:{message_id} | payload: {message_payload}")
 
             print(c.board)
+            print(message_id)
 
             if message_id == MessageType.NEW_GAME.value:
                 # os.system('cls' if os.name == 'nt' else 'clear')
+                c.cursor = message_payload[0]
                 pass
             elif message_id == MessageType.YOUR_TURN.value:
                 print('Choose your next move:')
@@ -109,6 +112,8 @@ if __name__ == '__main__':
                 if bool(message_payload):
                     #TODO TUTAJ DODAC WYNIK POPRAWNEGO RUCHU NA LOCALU I ZROBIC UPDATE BOARDA
                     print(c.get_last())
+                    c.board.update_board_with_local(c.get_last(), c.cursor)
+                    print(c.board)
                     #c.board.update_board()
                 else:
                     logging.warning("Bad move!")
