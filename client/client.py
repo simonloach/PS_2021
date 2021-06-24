@@ -1,5 +1,5 @@
 from utils.definitions import MessageType
-from communicator import Communicator, ConnectionConfig
+from communicator import Communicator, ConnectionConfig, Message
 from board import Board
 
 import socket
@@ -56,40 +56,77 @@ def parse_args(**kwargs):
 
 class Client:
 
-    def __init__(self, **kwargs):
+    def __init__(self, config):
+        self.comm = Communicator(config)
+        self.board:Board = Board()
+        self.in_msg_queue = Queue()
+        self.out_msg_queue = Queue()
         self.last_move = (None, None)
-
-        self.board=Board()
         self.cursor=None
-        self.msg_queue = Queue()
 
-    def send_move(self):
+    def connect(self):
+        self.comm.connect()
+
+    def get_users_move(self):
         '''
-            x, y are strings represendation of int from range(0,2)
+            x, y are strings represendation of int from range(1,3)
         '''
         x=input("Provide X coordinate:\t")
         y=input("Provide Y coordinate:\t")
-        self.set_last(x, y)
-        return self
+        self.last_move = (x, y)
+        return (x, y)
 
     def main_loop(self):
         while True:
-            msg = self.msg_queue.get()
-            print(msg)
+            msg = self.in_msg_queue.get()
 
-            if msg[0] == MessageType.CONNECTED:
+            if msg.type == MessageType.CONNECTED:
                 self.board.add_message("You're connected to the server")
+                self.board.add_message("Waiting for the opponent")
+                print(self.board)
+            elif msg.type == MessageType.NEW_GAME:
+                self.cursor = msg.payload
+                self.board.clear()
+                self.board.add_message("Good Luck.")
+                if self.cursor == 2:
+                    self.board.add_message("Opponent's turn now.")
+                    print(self.board)
+            elif msg.type == MessageType.YOUR_TURN:
+                self.board.add_message("Now it's your turn!")
+                print(self.board)
+                (x, y) = self.get_users_move()
+                move_msg = Message(MessageType.NEXT_MOVE, (x, y))
+                self.out_msg_queue.put(move_msg)
+            elif msg.type == MessageType.MOVE_VALIDITY:
+                if bool(msg.payload):
+                    self.board.update_board_with_local(self.last_move, self.cursor)
+                    self.board.add_message("Opponent's turn now.")
+                    print(self.board)
+                else:
+                    self.board.add_message("Invalid move")
+                    print(self.board)
+                    (x, y) = self.get_users_move()
+                    move_msg = Message(MessageType.NEXT_MOVE, (x, y))
+                    self.out_msg_queue.put(move_msg)
+            elif msg.type == MessageType.BOARD_UPDATE:
+                self.board.update_board(msg.payload)
                 print(self.board)
 
-    def msg_thread_func(self):
+    def in_msg_thread_func(self):
         try:
-            comm = Communicator(config)
-            comm.connect()
             while True:
-                new_msg = comm.next_msg()
-                self.msg_queue.put(new_msg)
+                new_msg = self.comm.next_msg()
+                self.in_msg_queue.put(new_msg)
         except Exception as e:
-            logging.exception("exception in msg thread function")
+            logging.exception("exception in in_msg_thread function")
+
+    def out_msg_thread_func(self):
+        try:
+            while True:
+                msg = self.out_msg_queue.get()
+                self.comm.send_msg(msg)
+        except Exception as e:
+            logging.exception("exception in out_msg_thread function")
 
 if __name__ == '__main__':
     try:
@@ -98,11 +135,14 @@ if __name__ == '__main__':
         print(e)
         sys.exit(1)
 
-    client = Client()
+    client = Client(config)
 
     try:
-        msg_thread = threading.Thread(target=client.msg_thread_func)
-        msg_thread.start()
+        client.connect();
+        in_msg_thread = threading.Thread(target=client.in_msg_thread_func)
+        in_msg_thread.start()
+        out_msg_thread = threading.Thread(target=client.out_msg_thread_func)
+        out_msg_thread.start()
 
         client.main_loop()
     except TimeoutError as e:
