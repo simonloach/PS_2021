@@ -74,8 +74,8 @@ class Client:
             x, y are strings represendation of int from range(1,3)
         '''
         if self.config["automover"]:
-            x = random.randint(1, 3)
-            y = random.randint(1, 3)
+            x = chr(random.randint(0, 2) + ord('1'))
+            y = chr(random.randint(0, 2) + ord('1'))
         else:
             x=input("Provide X coordinate:\t")
             y=input("Provide Y coordinate:\t")
