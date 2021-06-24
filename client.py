@@ -89,7 +89,7 @@ class Client:
                 
             else:
                 message_id = c.buffer[0]
-                print(c.board)
+                print(c.board, end='\r')
 
                 if message_id == MessageType.CONNECTED.value:
                     c.buffer = c.buffer[1:] 
@@ -111,7 +111,7 @@ class Client:
                     message_payload = c.buffer[1]
                     if bool(message_payload):
                         c.board.update_board_with_local(c.get_last(), c.cursor)
-                        print(c.board)
+                        print(c.board, end='\r')
 
                     else:
                         logging.warning("Bad move!")

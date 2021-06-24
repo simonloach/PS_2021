@@ -1,4 +1,4 @@
-version: '1.0'
+version: '2.0'
 services:
   server_cont:
     build:
@@ -6,6 +6,11 @@ services:
       dockerfile: Dockerfile
     stdin_open: true
     tty: true
+    ports:
+      - "2137"
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.2
     entrypoint: python server.py
   client2:
     build:
@@ -13,11 +18,22 @@ services:
       dockerfile: Dockerfile
     stdin_open: true
     tty: true
-    entrypoint: python client.py
+    networks:
+      static-network:
+    entrypoint: python client.py -p 2137 -4 172.20.128.2
   client1:
     build:
       context: .
       dockerfile: Dockerfile
     stdin_open: true
     tty: true
-    entrypoint: python client.py
+    networks:
+      static-network:
+    entrypoint: python client.py -p 2137 -4 172.20.128.2
+
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          ip_range: 172.28.5.0/24
