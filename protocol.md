@@ -28,7 +28,7 @@
 ## Message descriptions
 
 - MSG(0) - empty message indicating that client has connected
-- MSG(1) - empty message indicating that server found an opponent for the player and the game begun
+- MSG(1) - message indicating that server found an opponent for the player and the game begun, it contains information about player cursor
 - MSG(2) - empty message telling client it's his turn now
 - MSG(3) - message containing two 1 byte values for X and Y using 0 based indexing
 - MSG(4) - message with 1 byte (0/1) depending on validity of supplied move

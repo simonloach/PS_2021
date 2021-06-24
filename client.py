@@ -54,6 +54,8 @@ class Client:
             raise Exception('No address for the server was provided.')
 
         self.board=Board()
+        self.cursor=None
+        self.buffer=bytes()
 
 
     def connect(self):
@@ -80,40 +82,55 @@ class Client:
     def get_last(self):
         return self.last_move
 
+    def evaluate_mid(self):
+        try:
+            if not c.buffer:
+                c.buffer += c.listen()
+                
+            else:
+                message_id = c.buffer[0]
+                print(c.board)
+
+                if message_id == MessageType.CONNECTED.value:
+                    c.buffer = c.buffer[1:] 
+
+                elif message_id == MessageType.NEW_GAME.value:
+                    message_payload = c.buffer[1]
+                    c.cursor = message_payload
+                    c.buffer = c.buffer[2:]
+
+                elif message_id == MessageType.YOUR_TURN.value:
+                    print('Choose your next move:')
+                    x=input("Provide X coordinate:\t")
+                    y=input("Provide Y coordinate:\t")
+                    c.set_last(x, y)
+                    c.send_move(x, y)
+                    c.buffer = c.buffer[1:]
+
+                elif message_id == MessageType.MOVE_VALIDITY.value:
+                    message_payload = c.buffer[1]
+                    if bool(message_payload):
+                        c.board.update_board_with_local(c.get_last(), c.cursor)
+                        print(c.board)
+
+                    else:
+                        logging.warning("Bad move!")
+                    c.buffer = c.buffer[2:]
+
+                elif message_id == MessageType.BOARD_UPDATE.value:
+                    message_payload = c.buffer[1:10]
+                    c.board.update_board(message_payload)
+                    c.buffer = c.buffer[10:]
+
+        except IndexError:
+            c.buffer.append(c.listen())
+
 if __name__ == '__main__':
     try:
         c = Client(**vars(args))
         c.connect()
         while True:
-
-            message = c.listen()
-            message_id = message[0]
-            message_payload = message[1:]
-
-            logging.info(f"Recieved: {message} where ID:{message_id} | payload: {message_payload}")
-
-            print(c.board)
-
-            if message_id == MessageType.NEW_GAME.value:
-                # os.system('cls' if os.name == 'nt' else 'clear')
-                pass
-            elif message_id == MessageType.YOUR_TURN.value:
-                print('Choose your next move:')
-                x=input("Provide X coordinate:\t")
-                y=input("Provide Y coordinate:\t")
-                c.set_last(x, y)
-                c.send_move(x, y)
-            elif message_id == MessageType.NEXT_MOVE.value:
-                print('next move')
-            elif message_id == MessageType.MOVE_VALIDITY.value:
-                if bool(message_payload):
-                    #TODO TUTAJ DODAC WYNIK POPRAWNEGO RUCHU NA LOCALU I ZROBIC UPDATE BOARDA
-                    print(c.get_last())
-                    #c.board.update_board()
-                else:
-                    logging.warning("Bad move!")
-            elif message_id == MessageType.BOARD_UPDATE.value:
-                c.board.update_board(message_payload)
+            c.evaluate_mid()
 
     except TimeoutError as e:
         logging.error("Connection timed out!")

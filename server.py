@@ -38,8 +38,8 @@ class Server:
                         _ = self.players.pop(self.players.index(this_player))
                         other_player = self.players.pop(0)
                         self.games.append(Game(this_player, other_player))
-                        this_player.send_msg(MessageType.NEW_GAME)
-                        other_player.send_msg(MessageType.NEW_GAME)
+                        this_player.send_msg(MessageType.NEW_GAME, b'\x01')
+                        other_player.send_msg(MessageType.NEW_GAME, b'\x02')
                     else:
                         time.sleep(0.5)
                 else:
