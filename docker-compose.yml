@@ -10,7 +10,7 @@ services:
       - "2137"
     networks:
       static-network:
-        ipv4_address: 172.20.128.2
+        ipv4_address: 172.20.0.254
     entrypoint: python server.py
   client1:
     build:
@@ -20,7 +20,11 @@ services:
     tty: true
     networks:
       static-network:
-    entrypoint: python client.py -p 2137 -4 172.20.128.2
+    entrypoint: python3 client.py -p 2137 -4 172.20.0.254
+    depends_on: 
+      - server_cont
+    volumes:
+      - ./logs/:/tictactoe/logs
   client2:
     build:
       context: client
@@ -29,11 +33,17 @@ services:
     tty: true
     networks:
       static-network:
-    entrypoint: python client.py -p 2137 -4 172.20.128.2
+    entrypoint: python3 client.py -p 2137 -4 172.20.0.254
+    depends_on: 
+      - server_cont
+    volumes:
+      - ./logs/:/tictactoe/logs
 
 networks:
   static-network:
     ipam:
+      driver: default
       config:
         - subnet: 172.20.0.0/16
-          ip_range: 172.28.5.0/24
+          gateway: 172.20.0.1
+

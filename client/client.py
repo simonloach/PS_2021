@@ -10,9 +10,10 @@ import logging
 import sys
 from queue import Queue
 import threading
+import random
 
 format = "%(asctime)s: %(message)s"
-logging.basicConfig(filename='client.log', encoding='utf-8', level=logging.DEBUG, format=format, datefmt="%H:%M:%S")
+logging.basicConfig(filename=f'logs/client{random.randint(1000,9999)}.log', encoding='utf-8', level=logging.DEBUG, format=format, datefmt="%H:%M:%S")
 
 parser = argparse.ArgumentParser(description='Client for Tic Tac Toe game written by: \n\t Szymon Piskorz \n\tLukasz Sroka\n\tJaroslaw Zelechowski')
 parser.add_argument('-4',metavar="X.X.X.X",help='IPv4 Address', type=str)

@@ -1,9 +1,11 @@
-FROM python:3.8.2
+FROM python:3.9.5
 
-WORKDIR /workdir
+WORKDIR /tictactoe
 
 COPY requirements.txt requirements.txt
 
 RUN pip install -r requirements.txt
+
+RUN mkdir logs
 
 COPY . .
