@@ -57,7 +57,7 @@ services:
     networks:
       static-network:
     entrypoint: python client.py -p 2137 -4 172.20.128.2
-  client1:
+  client6:
     build:
       context: client
       dockerfile: Dockerfile
@@ -66,7 +66,7 @@ services:
     networks:
       static-network:
     entrypoint: python client.py -p 2137 -4 172.20.128.2
-  client2:
+  client7:
     build:
       context: client
       dockerfile: Dockerfile
@@ -75,7 +75,7 @@ services:
     networks:
       static-network:
     entrypoint: python client.py -p 2137 -4 172.20.128.2
-  client3:
+  client8:
     build:
       context: client
       dockerfile: Dockerfile
@@ -84,7 +84,7 @@ services:
     networks:
       static-network:
     entrypoint: python client.py -p 2137 -4 172.20.128.2
-  client4:
+  client9:
     build:
       context: client
       dockerfile: Dockerfile
@@ -93,7 +93,7 @@ services:
     networks:
       static-network:
     entrypoint: python client.py -p 2137 -4 172.20.128.2
-  client5:
+  client10:
     build:
       context: client
       dockerfile: Dockerfile

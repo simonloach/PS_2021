@@ -20,7 +20,7 @@ Demo can be fired of using Docker Engine.
 - `git clone https://github.com/simonloach/PS_2021.git`
 - `make demo`
 
-That builds and runs a total of 11 docker containers(1 server and 10 clients) that work over docker instantiated network defined in `docker-compose.yml` basing on [server/Dockerfile](server/Dockerfile) and [client/Dockerfile](client/Dockerfile). 
+That builds and runs a total of 11 docker containers(1 server and 10 clients) that work over docker instantiated network defined in `docker-compose-demo.yml` basing on [server/Dockerfile](server/Dockerfile) and [client/Dockerfile](client/Dockerfile). 
 
 Entrypoint scripts are [server.py](server/server.py) and [client.py](client/client.py)
 

@@ -1,4 +1,19 @@
 class Board:
+    """A board that stores the current game state on Client side.
+
+    Attributes:
+        board: List<int>        Current state of the game stored in a list of integers
+        messages: List<string>  Current messages that should be sent to user during next print
+        printable: str          Board after transforming into printable object using __repr__
+    
+    
+    Methods:
+        update_board(board: bytearray)  Updates self.board basing on bytearray received from Server() 
+        update_board_with_local(last_move, cursor) Updates self.board after making a move that was validated by Server()
+        add_message(message: str) Adds message to self.messages
+        remove_message(message: str) Removes the message to self.messages
+        clear() Rewrites self.board with empty one
+    """
     def __init__(self):
         self.board = [0]*9
         self.messages = list()
@@ -48,10 +63,10 @@ class Board:
         index = int(last_move[0]) - 1 + (int(last_move[1]) - 1) * 3
         self.board[index] = cursor
 
-    def add_message(self, message):
+    def add_message(self, message: str):
         self.messages.append(message)
 
-    def remove_message(self, message):
+    def remove_message(self, message: str):
         self.messages.pop(self.messages.index(message))
 
     def clear(self):
