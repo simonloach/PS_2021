@@ -1,11 +1,5 @@
 from argparse import ONE_OR_MORE
 from player import MessageType, Player, PlayerState
-from enum import Enum
-
-class WinningCases(Enum):
-    VERTICAL = [[i, i+1, i+2] for i in range(3)]
-    HORIZONTAL = [[i, i+3, i+6] for i in range(3)]
-    DIAGONAL = [[2+i, 5, 7-i] for i in [1, -1]]
 
 
 class Game:
@@ -31,23 +25,34 @@ class Game:
         if self.board[idx] != 0:
             return False
         self.board[idx] = self.current_player + 1
-
-        if self.check_for_win(): 
-            
-            print("someone won")
-            pass #TODO DEFINE WINNING MESSAGE
-
         next_player = (self.current_player + 1) % 2
+
         self.players[next_player].send_msg(MessageType.BOARD_UPDATE, bytes(self.board))
         self.players[self.current_player].update_state(PlayerState.WAITING)
         self.players[next_player].update_state(PlayerState.IN_TURN)
+
+        if self.check_for_win(): 
+            self.players[self.current_player].update_state(PlayerState.FINISHED)
+            self.players[next_player].update_state(PlayerState.FINISHED)
+            return True
+
         self.players[next_player].send_msg(MessageType.YOUR_TURN)
         self.current_player = next_player
+
         return True
     
     def check_for_win(self):
-        for TYPE_OF_CASE in WinningCases:
+        WINNING_CASES = [
+            [[i, i+1, i+2] for i in range(0,9,3)], # HORIZONTALs
+            [[i, i+3, i+6] for i in range(0,3,1)], # VERTICALs
+            [[1+i, 4, 7-i] for i in range(-1,2,2)] # DIAGONALs
+            ]
+
+
+        for TYPE_OF_CASE in WINNING_CASES:
             for CASE in TYPE_OF_CASE:
+                if self.board[CASE[0]] == 0 or self.board[CASE[1]] == 0 or self.board[CASE[2]] == 0:
+                    continue
                 if self.board[CASE[0]] == self.board[CASE[1]] == self.board[CASE[2]]:
                     return True
         return False

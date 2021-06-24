@@ -102,6 +102,7 @@ class Client:
                     c.board.add_message("Waiting for opponent.")
 
                 elif message_id == MessageType.NEW_GAME.value:
+                    c.board.clear_board()
                     message_payload = c.buffer[1]
                     c.cursor = message_payload
                     c.buffer = c.buffer[2:]

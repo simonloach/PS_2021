@@ -54,5 +54,8 @@ class Board:
     def remove_message(self, message):
         self.messages.pop(self.messages.index(message))
 
+    def clear_board(self):
+        self.board = [0]*9
+
 b = Board()
 print(b)

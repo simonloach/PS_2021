@@ -44,6 +44,12 @@ class Server:
                         g.start()
                     else:
                         time.sleep(0.5)
+
+                elif this_player.state == PlayerState.FINISHED:
+                    print('dupson')
+                    this_player.state = PlayerState.DISCONNECTED
+                    self.players.append(this_player)
+
                 else:
                     if this_player.game.is_now_my_turn(this_player):
                         move = this_player.wait_for_move()

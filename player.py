@@ -6,6 +6,7 @@ class PlayerState(Enum):
     CONNECTED = 1
     IN_TURN = 2
     WAITING = 3
+    FINISHED = 4
 
 class MessageType(Enum):
     CONNECTED = 0
