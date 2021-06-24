@@ -11,6 +11,19 @@ format = "%(asctime)s: %(message)s"
 logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
 
 class Server:
+    """A server that handles all Client() instances and hosts games
+
+    Attributes:
+        players: List<Player>       List of Player objects
+        games: List<Game>          List of Game objects
+        socket: socket.Socket()     Socket for communicating with Client() instances
+    
+    
+    Methods:
+        connect(client_socket: socket.Socket())  Updates self.board basing on bytearray received from Server() 
+        accept()    Accepts new connections comming from Client() instances.
+                    Start thread for each Client with connect(clientSocket)
+    """
     def __init__(self):
         self.players = list()
         self.games = list()
@@ -46,7 +59,6 @@ class Server:
                         time.sleep(0.5)
 
                 elif this_player.state == PlayerState.FINISHED:
-                    print('dupson')
                     this_player.state = PlayerState.DISCONNECTED
                     self.players.append(this_player)
 
@@ -67,7 +79,9 @@ class Server:
         t = threading.Thread(target=Server.connect, args=(self, clientSocket))
         t.start()
 
+    def main_loop(self):
+        while True:
+            self.accept()
 
-x=Server()
-while True:
-    x.accept()
+
+Server().main_loop()
