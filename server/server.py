@@ -17,16 +17,17 @@ class Server:
         players: List<Player>       List of Player objects
         games: List<Game>          List of Game objects
         socket: socket.Socket()     Socket for communicating with Client() instances
-    
-    
+
+
     Methods:
-        connect(client_socket: socket.Socket())  Updates self.board basing on bytearray received from Server() 
+        connect(client_socket: socket.Socket())  Updates self.board basing on bytearray received from Server()
         accept()    Accepts new connections comming from Client() instances.
                     Start thread for each Client with connect(clientSocket)
     """
     def __init__(self):
         self.players = list()
         self.games = list()
+        self.players_lock = threading.Lock()
         try:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -45,22 +46,25 @@ class Server:
             this_player.send_msg(MessageType.CONNECTED)
             while True:
                 if this_player.state == PlayerState.DISCONNECTED:
-                    #TODO create self.players mutex
+                    self.players_lock.acquire()
                     if len(self.players)>1:
-                        logging.info("Starting game")
                         _ = self.players.pop(self.players.index(this_player))
                         other_player = self.players.pop(0)
+                        self.players_lock.release()
                         g = Game(this_player, other_player)
                         self.games.append(g)
                         this_player.send_msg(MessageType.NEW_GAME, b'\x01')
                         other_player.send_msg(MessageType.NEW_GAME, b'\x02')
                         g.start()
                     else:
+                        self.players_lock.release()
                         time.sleep(0.5)
 
                 elif this_player.state == PlayerState.FINISHED:
                     this_player.state = PlayerState.DISCONNECTED
+                    self.players_lock.acquire()
                     self.players.append(this_player)
+                    self.players_lock.release()
 
                 else:
                     if this_player.game.is_now_my_turn(this_player):
