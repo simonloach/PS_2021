@@ -31,7 +31,7 @@ All will be viewed from the scope of `docker compose up` command and each instan
 # Documentation
 
 ## Client
-Client is an application that functions as combination of user interface and endpoint translator of users inputs and Server messages. All user's inputs are being translated into our Communication Protocol described more throughly in protocol.md.
+Client is an application that functions as combination of user interface and endpoint translator of users inputs and Server messages. All user's inputs are being translated into our Communication Protocol described more throughly in [protocol.md](protocol.md).
 
 ## Server
 Server is an application that functions as a deamon. It allows users to connect to it and provides backend for each instance of Client to connect to. Server then handles fiding oponent for the Client initiates an instance of a Game between two Clients that become Player at this stage. Game session is being handled by server until one of the Players wins by aligning three.
@@ -44,4 +44,4 @@ Server is an application that functions as a deamon. It allows users to connect 
 - The first player to put 3 consecutive marks that line up(horizontaly or verticaly or diagonaly) wins
 
 ## Technical documentation
-#TODO
+Classes are well commented in the code itself. The communication protocol is described in [protocol.md](protocol.md).
