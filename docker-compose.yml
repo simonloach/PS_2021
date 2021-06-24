@@ -2,7 +2,7 @@ version: '2.0'
 services:
   server_cont:
     build:
-      context: .
+      context: server
       dockerfile: Dockerfile
     stdin_open: true
     tty: true
@@ -14,7 +14,7 @@ services:
     entrypoint: python server.py
   client2:
     build:
-      context: .
+      context: client
       dockerfile: Dockerfile
     stdin_open: true
     tty: true
@@ -23,7 +23,7 @@ services:
     entrypoint: python client.py -p 2137 -4 172.20.128.2
   client1:
     build:
-      context: .
+      context: client
       dockerfile: Dockerfile
     stdin_open: true
     tty: true

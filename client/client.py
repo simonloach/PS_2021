@@ -7,7 +7,7 @@ import re
 import logging
 import os
 
-format = "[%(levelname)s]%(asctime)s: %(message)s"
+format = "%(asctime)s: %(message)s"
 logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.DEBUG, format=format, datefmt="%H:%M:%S")
 
 parser = argparse.ArgumentParser(description='Client for Tic Tac Toe game written by: \n\t Szymon Piskorz \n\tLukasz Sroka\n\tJaroslaw Zelechowski')
@@ -62,7 +62,7 @@ class Client:
         logging.info(f"Connecting to {self.server_address} on port {self.port}")
         self.socket.connect((self.server_address, int(self.port)))
         logging.info(f"Connected!")
-    
+
 
     def listen(self):
         message = self.socket.recv(10)
@@ -78,7 +78,7 @@ class Client:
         self.set_last(x, y)
         self.socket.send(MessageType.NEXT_MOVE.value.to_bytes(1, "big") + x.encode() + y.encode() )
         return self
-    
+
 
     def set_last(self, x, y):
         self.last_move = (x,y)
@@ -92,7 +92,7 @@ class Client:
         try:
             if not c.buffer:
                 c.buffer += c.listen()
-                
+
             else:
                 message_id = c.buffer[0]
 
@@ -147,7 +147,7 @@ if __name__ == '__main__':
         logging.error("Parsing parameters encountered error: \n\t", e)
     finally:
         logging.info("Program finished")
-        
 
 
-    
+
+
