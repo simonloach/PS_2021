@@ -2,7 +2,7 @@ class Board:
     def __init__(self):
         self.board = [0]*9
         self.messages = list()
-        
+
     def __repr__(self):
         self.printable = list()
         for el in self.board:
@@ -22,7 +22,7 @@ class Board:
 \t|  1  |  {}  |  {}  |  {}  |
 \t|_____|_____|_____|_____|
 \t|     |     |     |     |
-\t|  2  |  {}  |  {}  |  {}  |              
+\t|  2  |  {}  |  {}  |  {}  |
 \t|_____|_____|_____|_____|
 \t|     |     |     |     |
 \t|  3  |  {}  |  {}  |  {}  |
@@ -40,7 +40,7 @@ class Board:
             else:
                 output += result.pop(0) + '\t' + self.messages.pop(0) + '\n'
         return output
-    
+
     def update_board(self, new_board: bytes):
         self.board = list(new_board)
 
@@ -50,12 +50,9 @@ class Board:
 
     def add_message(self, message):
         self.messages.append(message)
-    
+
     def remove_message(self, message):
         self.messages.pop(self.messages.index(message))
 
     def clear_board(self):
         self.board = [0]*9
-
-b = Board()
-print(b)
