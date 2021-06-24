@@ -37,14 +37,15 @@ class Server:
                         logging.info("Starting game")
                         _ = self.players.pop(self.players.index(this_player))
                         other_player = self.players.pop(0)
-                        self.games.append(Game(this_player, other_player))
+                        g = Game(this_player, other_player)
+                        self.games.append(g)
                         this_player.send_msg(MessageType.NEW_GAME, b'\x01')
                         other_player.send_msg(MessageType.NEW_GAME, b'\x02')
+                        g.start()
                     else:
                         time.sleep(0.5)
                 else:
                     if this_player.game.is_now_my_turn(this_player):
-                        this_player.send_msg(MessageType.YOUR_TURN)
                         move = this_player.wait_for_move()
                         validity = this_player.game.move(move)
                         this_player.send_msg(MessageType.MOVE_VALIDITY, validity.to_bytes(1, 'big'))

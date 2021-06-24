@@ -9,6 +9,7 @@ class Game:
         self.board = [0]*9 # 0 - empty, 1 - circle, 2 - cross
 
     def start(self):
+        self.players[self.current_player].send_msg(MessageType.YOUR_TURN)
         self.players[self.current_player].update_state(PlayerState.IN_TURN)
 
     def is_now_my_turn(self, player: Player):
@@ -28,5 +29,6 @@ class Game:
         self.players[next_player].send_msg(MessageType.BOARD_UPDATE, bytes(self.board))
         self.players[self.current_player].update_state(PlayerState.WAITING)
         self.players[next_player].update_state(PlayerState.IN_TURN)
-        self.current_player = next_player;
+        self.players[next_player].send_msg(MessageType.YOUR_TURN)
+        self.current_player = next_player
         return True

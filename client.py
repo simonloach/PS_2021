@@ -8,7 +8,7 @@ import logging
 import os
 
 format = "%(asctime)s: %(message)s"
-logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
+logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.DEBUG, format=format, datefmt="%H:%M:%S")
 
 parser = argparse.ArgumentParser(description='Client for Tic Tac Toe game written by: \n\t Szymon Piskorz \n\tLukasz Sroka\n\tJaroslaw Zelechowski')
 parser.add_argument('-4',metavar="X.X.X.X",help='IPv4 Address', type=str)
@@ -69,59 +69,68 @@ class Client:
         message = self.socket.recv(10)
         return message
 
-    def send_move(self, x: str, y: str):
+
+    def send_move(self):
         '''
             x, y are strings represendation of int from range(0,2)
         '''
+        x=input("Provide X coordinate:\t")
+        y=input("Provide Y coordinate:\t")
+        self.set_last(x, y)
         self.socket.send(MessageType.NEXT_MOVE.value.to_bytes(1, "big") + x.encode() + y.encode() )
         return self
     
+
     def set_last(self, x, y):
         self.last_move = (x,y)
-#TODO TUTAJ TE GOWNA WSZYSTKO WIESZAJA, OGOLNIE WSZYSTKO WIESZA JAK SIE PROBUJE FUNKCJE WYWALIC PRZEZ PDB
+
+
     def get_last(self):
         return self.last_move
 
-    def evaluate_mid(self):
+
+    def play(self):
         try:
             if not c.buffer:
                 c.buffer += c.listen()
                 
             else:
                 message_id = c.buffer[0]
-                print(c.board, end='\r')
 
                 if message_id == MessageType.CONNECTED.value:
-                    c.buffer = c.buffer[1:] 
+                    c.buffer = c.buffer[1:]
+                    c.board.add_message("Waiting for opponent.")
 
                 elif message_id == MessageType.NEW_GAME.value:
                     message_payload = c.buffer[1]
                     c.cursor = message_payload
                     c.buffer = c.buffer[2:]
+                    if c.cursor == 2:
+                        c.board.add_message("Opponents turn!")
 
                 elif message_id == MessageType.YOUR_TURN.value:
-                    print('Choose your next move:')
-                    x=input("Provide X coordinate:\t")
-                    y=input("Provide Y coordinate:\t")
-                    c.set_last(x, y)
-                    c.send_move(x, y)
+                    c.board.add_message("Your turn!")
+                    print(c.board)
+                    c.send_move()
                     c.buffer = c.buffer[1:]
 
                 elif message_id == MessageType.MOVE_VALIDITY.value:
                     message_payload = c.buffer[1]
                     if bool(message_payload):
                         c.board.update_board_with_local(c.get_last(), c.cursor)
-                        print(c.board, end='\r')
-
+                        c.board.add_message("Opponents turn!")
                     else:
-                        logging.warning("Bad move!")
+                        c.board.add_message("Invalid move!")
+                        print(c.board)
+                        logging.info("Bad move!")
+                        c.send_move()
                     c.buffer = c.buffer[2:]
 
                 elif message_id == MessageType.BOARD_UPDATE.value:
                     message_payload = c.buffer[1:10]
                     c.board.update_board(message_payload)
                     c.buffer = c.buffer[10:]
-
+            print(c.board)
         except IndexError:
             c.buffer.append(c.listen())
 
@@ -130,7 +139,7 @@ if __name__ == '__main__':
         c = Client(**vars(args))
         c.connect()
         while True:
-            c.evaluate_mid()
+            c.play()
 
     except TimeoutError as e:
         logging.error("Connection timed out!")
