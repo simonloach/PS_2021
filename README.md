@@ -22,7 +22,7 @@ Demo can be fired of using Docker Engine.
 
 That builds and runs a total of 11 docker containers(1 server and 10 clients) that work over docker instantiated network defined in `docker-compose.yml` basing on `server/Dockerfile` and `client/Dockerfile`. 
 
-Entrypoint scripts are server.py and client.py
+Entrypoint scripts are [server.py](server/server.py) and [client.py](client/client.py)
 
 Clients will run with option to randomize moves `(x,y)` and sort of play on its own.
 
