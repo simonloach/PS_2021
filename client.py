@@ -7,7 +7,7 @@ import re
 import logging
 import os
 
-format = "%(asctime)s: %(message)s"
+format = "[%(levelname)s]%(asctime)s: %(message)s"
 logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.DEBUG, format=format, datefmt="%H:%M:%S")
 
 parser = argparse.ArgumentParser(description='Client for Tic Tac Toe game written by: \n\t Szymon Piskorz \n\tLukasz Sroka\n\tJaroslaw Zelechowski')
@@ -65,7 +65,6 @@ class Client:
     
 
     def listen(self):
-        logging.info(f"Listening")
         message = self.socket.recv(10)
         return message
 
