@@ -3,12 +3,6 @@ import logging
 from typing import Sequence
 from utils.definitions import MessageType
 
-class ConnectionConfig:
-    def __init__(self, ip_type, ip_addr, port):
-        self.ip_type = ip_type
-        self.ip_addr = ip_addr
-        self.port = port
-
 class Message:
     def __init__(self, msg_type, payload = None):
         self.type = msg_type
@@ -26,14 +20,14 @@ class Message:
         return self.type.value.to_bytes(1, "little") + self.encode(self.payload)
 
 class Communicator:
-    def __init__(self, config: ConnectionConfig ):
+    def __init__(self, config: dict):
         self.config = config
         self.msg_buffer = bytes()
-        self.socket = socket.socket(config.ip_type, socket.SOCK_STREAM)
+        self.socket = socket.socket(config["ip_type"], socket.SOCK_STREAM)
 
     def connect(self):
-        logging.info(f"Connecting to { self.config.ip_addr } on port {self.config.port}")
-        self.socket.connect((self.config.ip_addr, int(self.config.port)))
+        logging.info(f"Connecting to { self.config['ip_addr'] } on port {self.config['port']}")
+        self.socket.connect((self.config['ip_addr'], int(self.config['port'])))
         logging.info(f"Connected!")
 
     def send_msg(self, msg: Message):
