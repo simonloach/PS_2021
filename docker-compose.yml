@@ -12,7 +12,7 @@ services:
       static-network:
         ipv4_address: 172.20.128.2
     entrypoint: python server.py
-  client2:
+  client1:
     build:
       context: client
       dockerfile: Dockerfile
@@ -21,7 +21,7 @@ services:
     networks:
       static-network:
     entrypoint: python client.py -p 2137 -4 172.20.128.2
-  client1:
+  client2:
     build:
       context: client
       dockerfile: Dockerfile
