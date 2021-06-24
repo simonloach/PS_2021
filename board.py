@@ -12,22 +12,22 @@ class Board:
             elif el== 2:
                 self.printable.append(u"\u2716")
 
-        result = f'''
+        result = '''
     \t       _________________
     \t      |     |     |     |
     \t     X|  1  |  2  |  3  |
     \t __Y__|_____|_____|_____|
     \t|     |     |     |     |
-    \t|  1  |  {self.printable[0]}  |  {self.printable[1]}  |  {self.printable[2]}  |
+    \t|  1  |  {}  |  {}  | {}   |
     \t|_____|_____|_____|_____|
     \t|     |     |     |     |
-    \t|  2  |  {self.printable[3]}  |  {self.printable[4]}  |  {self.printable[5]}  |
+    \t|  2  |  {}  |  {}  | {}   |
     \t|_____|_____|_____|_____|
     \t|     |     |     |     |
-    \t|  3  |  {self.printable[6]}  |  {self.printable[7]}  |  {self.printable[8]}  |
+    \t|  3  |  {}  |  {}  | {}   |
     \t|_____|_____|_____|_____|
     '''
-        return result  
+        return result.format(*self.printable)  
     
     def update_board(self, new_board: bytes):
         self.board = list(new_board)
