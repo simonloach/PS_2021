@@ -20,7 +20,7 @@ services:
     tty: true
     networks:
       static-network:
-    entrypoint: python client.py -p 2137 -4 172.20.128.2
+    entrypoint: python client.py -p 2137 -4 172.20.128.2 -a
   client2:
     build:
       context: client
@@ -29,7 +29,7 @@ services:
     tty: true
     networks:
       static-network:
-    entrypoint: python client.py -p 2137 -4 172.20.128.2
+    entrypoint: python client.py -p 2137 -4 172.20.128.2 -a
   client3:
     build:
       context: client
@@ -38,7 +38,7 @@ services:
     tty: true
     networks:
       static-network:
-    entrypoint: python client.py -p 2137 -4 172.20.128.2
+    entrypoint: python client.py -p 2137 -4 172.20.128.2 -a
   client4:
     build:
       context: client
@@ -47,7 +47,7 @@ services:
     tty: true
     networks:
       static-network:
-    entrypoint: python client.py -p 2137 -4 172.20.128.2
+    entrypoint: python client.py -p 2137 -4 172.20.128.2 -a
   client5:
     build:
       context: client
@@ -56,7 +56,7 @@ services:
     tty: true
     networks:
       static-network:
-    entrypoint: python client.py -p 2137 -4 172.20.128.2
+    entrypoint: python client.py -p 2137 -4 172.20.128.2 -a
   client6:
     build:
       context: client
@@ -65,7 +65,7 @@ services:
     tty: true
     networks:
       static-network:
-    entrypoint: python client.py -p 2137 -4 172.20.128.2
+    entrypoint: python client.py -p 2137 -4 172.20.128.2 -a
   client7:
     build:
       context: client
@@ -74,7 +74,7 @@ services:
     tty: true
     networks:
       static-network:
-    entrypoint: python client.py -p 2137 -4 172.20.128.2
+    entrypoint: python client.py -p 2137 -4 172.20.128.2 -a
   client8:
     build:
       context: client
@@ -83,7 +83,7 @@ services:
     tty: true
     networks:
       static-network:
-    entrypoint: python client.py -p 2137 -4 172.20.128.2
+    entrypoint: python client.py -p 2137 -4 172.20.128.2 -a
   client9:
     build:
       context: client
@@ -92,7 +92,7 @@ services:
     tty: true
     networks:
       static-network:
-    entrypoint: python client.py -p 2137 -4 172.20.128.2
+    entrypoint: python client.py -p 2137 -4 172.20.128.2 -a
   client10:
     build:
       context: client
@@ -101,7 +101,7 @@ services:
     tty: true
     networks:
       static-network:
-    entrypoint: python client.py -p 2137 -4 172.20.128.2
+    entrypoint: python client.py -p 2137 -4 172.20.128.2 -a
 
 
 networks:

@@ -1,23 +1,24 @@
 from utils.definitions import MessageType
-from communicator import Communicator, ConnectionConfig, Message
+from communicator import Communicator, Message
 from board import Board
 
 import socket
+import random
 import argparse
 import re
 import logging
 import sys
-import time
 from queue import Queue
 import threading
 
 format = "%(asctime)s: %(message)s"
-logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.DEBUG, format=format, datefmt="%H:%M:%S")
+logging.basicConfig(filename='client.log', encoding='utf-8', level=logging.DEBUG, format=format, datefmt="%H:%M:%S")
 
 parser = argparse.ArgumentParser(description='Client for Tic Tac Toe game written by: \n\t Szymon Piskorz \n\tLukasz Sroka\n\tJaroslaw Zelechowski')
 parser.add_argument('-4',metavar="X.X.X.X",help='IPv4 Address', type=str)
 parser.add_argument('-6',metavar="Y:Y:Y:Y:Y:Y:Y:Y",help='IPv6 Address', type=str)
 parser.add_argument('-p',metavar="{0..65535}", help="Port number for the server", type=str)
+parser.add_argument('-a',help="Enable automatic mover", action="store_true", default=False)
 args = parser.parse_args()
 
 
@@ -50,7 +51,7 @@ def parse_args(**kwargs):
     else:
         raise Exception('No address for the server was provided.')
 
-    config = ConnectionConfig(ip_type, ip_addr, port)
+    config = {"ip_type": ip_type, "ip_addr": ip_addr, "port": port, "automover": kwargs["a"] }
     logging.debug(f"Staring client with config: {config}")
     return config
 
@@ -58,6 +59,7 @@ class Client:
 
     def __init__(self, config):
         self.comm = Communicator(config)
+        self.config = config
         self.board:Board = Board()
         self.in_msg_queue = Queue()
         self.out_msg_queue = Queue()
@@ -71,8 +73,12 @@ class Client:
         '''
             x, y are strings represendation of int from range(1,3)
         '''
-        x=input("Provide X coordinate:\t")
-        y=input("Provide Y coordinate:\t")
+        if self.config["automover"]:
+            x = random.randint(1, 3)
+            y = random.randint(1, 3)
+        else:
+            x=input("Provide X coordinate:\t")
+            y=input("Provide Y coordinate:\t")
         self.last_move = (x, y)
         return (x, y)
 
