@@ -84,4 +84,5 @@ class Server:
             self.accept()
 
 
-Server().main_loop()
+if __name__ == '__main__':
+    Server().main_loop()
