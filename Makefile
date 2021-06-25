@@ -1,4 +1,4 @@
-.PHONY: up down server client
+.PHONY: up down server client demo demo-down
 up:
 	@docker-compose build
 	@docker-compose up -d
@@ -19,3 +19,6 @@ client:
 demo:
 	@docker-compose -f docker-compose-demo.yml build
 	@docker-compose -f docker-compose-demo.yml up
+
+demo-down:
+	@docker-compose -f docker-compose-demo.yml down

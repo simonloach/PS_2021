@@ -30,7 +30,14 @@ class Player:
 
     def send_msg(self, msg_type: MessageType, msg: bytes = b""):
         out = msg_type.value.to_bytes(1, "big") + msg
-        logging.info(f"Sending: | {msg_type.value} | {msg} |\n {out}")
+        logging.info('''Sending:
++---------------------------------------------------+
+|  MSG ID |          MESSAGE PAYLOAD                |
++---------------------------------------------------+
+|   {1:2}    | {0:39} |
++---------+-----------------------------------------+               
+|  {2:46}   |
++---------------------------------------------------+ '''.format(msg.__repr__(), msg_type.value, out.__repr__()))
         self.socket.send(out)
 
     def wait_for_move(self):

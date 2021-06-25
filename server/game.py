@@ -1,5 +1,5 @@
 from player import MessageType, Player, PlayerState
-
+import logging
 
 class Game:
     def __init__(self, player1: Player, player2: Player):
@@ -28,7 +28,7 @@ class Game:
         self.players[next_player].send_msg(MessageType.BOARD_UPDATE, bytes(self.board))
         self.players[self.current_player].update_state(PlayerState.WAITING)
         self.players[next_player].update_state(PlayerState.IN_TURN)
-        if self.check_for_win(): 
+        if self.check_if_finished(): 
             self.players[self.current_player].update_state(PlayerState.FINISHED)
             self.players[next_player].update_state(PlayerState.FINISHED)
             return True
@@ -36,7 +36,7 @@ class Game:
         self.current_player = next_player
         return True
     
-    def check_for_win(self):
+    def check_if_finished(self):
         WINNING_CASES = [
             [[i, i+1, i+2] for i in range(0,9,3)], # HORIZONTALs
             [[i, i+3, i+6] for i in range(0,3,1)], # VERTICALs
@@ -48,6 +48,10 @@ class Game:
                 if self.board[CASE[0]] == 0 or self.board[CASE[1]] == 0 or self.board[CASE[2]] == 0:
                     continue
                 if self.board[CASE[0]] == self.board[CASE[1]] == self.board[CASE[2]]:
+                    logging.info("\033[32mSomeone won\033[0m")
                     return True
+        if not 0 in self.board:
+            logging.info("\033[33mNoone won\033[0m")
+            return True
 
         return False

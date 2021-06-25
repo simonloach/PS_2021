@@ -89,4 +89,10 @@ class Server:
 
 
 if __name__ == '__main__':
-    Server().main_loop()
+    while True:
+        try:
+            Server().main_loop()
+        except KeyboardInterrupt:
+            sys.exit(0)
+        finally:
+            logging.error("\033[31mSomething is fucked up mate.\033[0m")

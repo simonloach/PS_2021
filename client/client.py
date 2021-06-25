@@ -11,9 +11,10 @@ import sys
 from queue import Queue
 import threading
 import random
+import time
 
 format = "%(asctime)s: %(message)s"
-logging.basicConfig(filename=f'logs/client{random.randint(1000,9999)}.log', encoding='utf-8', level=logging.DEBUG, format=format, datefmt="%H:%M:%S")
+logging.basicConfig(filename=f'logs/client{time.strftime("%d-%m-%Y_%H:%M:%S", time.localtime())}.log', encoding='utf-8', level=logging.DEBUG, format=format, datefmt="%H:%M:%S")
 
 parser = argparse.ArgumentParser(description='Client for Tic Tac Toe game written by: \n\t Szymon Piskorz \n\tLukasz Sroka\n\tJaroslaw Zelechowski')
 parser.add_argument('-4',metavar="X.X.X.X",help='IPv4 Address', type=str)
@@ -61,7 +62,7 @@ class Client:
     def __init__(self, config):
         self.comm = Communicator(config)
         self.config = config
-        self.board:Board = Board()
+        self.board = Board()
         self.in_msg_queue = Queue()
         self.out_msg_queue = Queue()
         self.last_move = (None, None)
@@ -77,6 +78,7 @@ class Client:
         if self.config["automover"]:
             x = chr(random.randint(0, 2) + ord('1'))
             y = chr(random.randint(0, 2) + ord('1'))
+            time.sleep(1.0 + random.random())
         else:
             x=input("Provide X coordinate:\t")
             y=input("Provide Y coordinate:\t")
@@ -145,7 +147,7 @@ if __name__ == '__main__':
     client = Client(config)
 
     try:
-        client.connect();
+        client.connect()
         in_msg_thread = threading.Thread(target=client.in_msg_thread_func)
         in_msg_thread.start()
         out_msg_thread = threading.Thread(target=client.out_msg_thread_func)
