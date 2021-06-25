@@ -28,6 +28,15 @@ Clients will run with option to randomize moves `(x,y)` and sort of play on its 
 
 All will be viewed from the scope of `docker compose up` command and each instance of container is distinguishable by color of the `stdout`.
 
+Now to interact with containers that play random moves attach to the container that you want to interact with from other terminal. You can do that by typing `docker ps` and then copy the ID of container that you want to attach to into `docker attach <ID>`. We suggest observing from the perspective of the server. To restart do `make demo-down`.
+
+
+## Playing yourself
+Additionaly you can do `make up` to start two containers with automatic moves not enabled on one of them so that you can play yourself against computer.
+
+To restart do `make down`.
+
+
 # Documentation
 
 ## Client
